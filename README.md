@@ -2,7 +2,13 @@
 
 A Python package for plotting and animating your walk/run/ bike ride routes.
 
-walkmapper requires only a few external packages. These can be installed by navigating to where the package is installed on your machine using the terminal, and then issuing the following command:
+Install walkmapper using the command line:
+
+```shell
+pip install walkmapper
+```
+
+walkmapper requires only a few external packages. These can be installed by navigating to where the walkmapper is installed on your machine using the terminal, and then issuing the following command:
 
 ```shell
 pip install -r requirements.txt
