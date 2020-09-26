@@ -32,8 +32,7 @@ The class `SingleRoute` contains methods for analyzing and plotting a single rou
 ```python
 from walkmapper.routes import SingleRoute
 
-route = SingleRoute("path/to/your/file.gpx", home_lat=45.0000, home_lon=-
-                    122.0000, privacy_bubble_rad=150)
+route = SingleRoute("path/to/your/file.gpx", home_lat=45.0000, home_lon=-122.0000, privacy_bubble_rad=150)
 ```
 From here you can plot the .gpx file over a map image using the `SingleRoute.plot` method. The map image should have the following format: **Description_UpperRightLat_UpperRightLon_LowerLeftLat_LowerLeftLon.png**. If a latitude or longitude is negative, its value should be preceded by an ** m**. For example, a map centered on Portland, OR would have the file name: **Portland_45.5372_m122.5831_45.4761_m122.7077.png**. Providing the coordinates of the upper right and lower left corners of the map image in the title allows the plotting functions to parse these values and put appropriate boundaries on the matplotlib images.
 
@@ -43,8 +42,7 @@ The function `map_file_name` in `walkmapper.utils` makes formatting an image tit
 from walkmapper.utils import map_file_name
 
 # this function automatically renames the image
-map_file_name("images/portland.png", 45.5372, -
-              122.5831, 45.4761, -122.7077, "Portland")
+map_file_name("images/portland.png", 45.5372, -122.5831, 45.4761, -122.7077, "Portland")
 
 # saves over images/portland.png with images/Portland_45.5372_m122.5831_45.4761_m122.7077.png
 ```
@@ -57,12 +55,10 @@ The class `MultipleRoutes` contains methods for analyzing, plotting, and animati
 from walkmapper.routes import MultipleRoutes
 
 # compile all .gpx files in a folder into a list
-files = ["folder/{}".format(i)
-         for i in os.listdir("folder") if i.endswith(".gpx")]
+files = ["folder/{}".format(i) for i in os.listdir("folder") if i.endswith(".gpx")]
 
 # create instance of MultipleRoutes
-routes = MultipleRoutes(files, home_lat=45.0000,
-                        home_lon=-122.0000, privacy_bubble_rad=150)
+routes = MultipleRoutes(files, home_lat=45.0000, home_lon=-122.0000, privacy_bubble_rad=150)
 ```
 
 Once a `MultipleRoutes` instance is created, you can display the data several ways:
