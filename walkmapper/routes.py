@@ -197,7 +197,7 @@ class MultipleRoutes:
         if show:
             plt.show()
 
-    def heat_map(self, map_file_path, n_bins=100, alpha=0.5, show=True, save_file_path=None):
+    def heat_map(self, map_file_path, n_bins=100, alpha=0.5, show=True, save_file_path=None, dpi=300):
         '''
         Plots a heat map of all routes overlaid on a map
 
