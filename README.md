@@ -34,7 +34,7 @@ from walkmapper.routes import SingleRoute
 
 route = SingleRoute("path/to/your/file.gpx", home_lat=45.0000, home_lon=-122.0000, privacy_bubble_rad=150)
 ```
-From here you can plot the .gpx file over a map image using the `SingleRoute.plot` method. The map image should have the following format: **Description_UpperRightLat_UpperRightLon_LowerLeftLat_LowerLeftLon.png**. If a latitude or longitude is negative, its value should be preceded by an ** m**. For example, a map centered on Portland, OR would have the file name: **Portland_45.5372_m122.5831_45.4761_m122.7077.png**. Providing the coordinates of the upper right and lower left corners of the map image in the title allows the plotting functions to parse these values and put appropriate boundaries on the matplotlib images.
+From here you can plot the .gpx file over a map image using the `SingleRoute.plot` method. The map image should have the following format: **Description_UpperRightLat_UpperRightLon_LowerLeftLat_LowerLeftLon.png**. If a latitude or longitude is negative, its value should be preceded by an **m**. For example, a map centered on Portland, OR would have the file name: **Portland_45.5372_m122.5831_45.4761_m122.7077.png**. Providing the coordinates of the upper right and lower left corners of the map image in the title allows the plotting functions to parse these values and put appropriate boundaries on the matplotlib images.
 
 The function `map_file_name` in `walkmapper.utils` makes formatting an image title far easier:
 
@@ -69,7 +69,7 @@ map_file = "Portland_45.5372_m122.5831_45.4761_m122.7077.png"
 routes.basic_plot(map_file)
 
 # plot heat map
-routes.basic_plot(map_file, n_bins=100, alpha=0.5)
+routes.heat_map(map_file, n_bins=100, alpha=0.5)
 
 # create .mp4 animation displaying one route after another
 routes.basic_route_animation(map_file_path, fps=2, dpi=300)
