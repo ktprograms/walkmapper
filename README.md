@@ -27,6 +27,18 @@ The package works by analyzing .gpx files, a common file format used by GPS devi
 [Open Street Map](https://www.openstreetmap.org/) is a great resource for grabbing maps to use as backgrounds. Just select "Share" on the map sidebar, size your image with "Set custom dimensions", and download. Rename the photo using the methods described below, allowing the package to properly parse the latitudes and longitudes.
 
 -------------
+
+You can get the latitudes and longitudes of the image you have downloaded using "Share" in OpenStreetMap, by following these steps, as long as you **have not** checked `Set custom dimensions`, and you **have not** panned or zoomed tha map after downloading the image:
+
+1. Paste this into your shell (including the single quote at the end), but do not press enter yet: `python3 -c "import sys;print([round(float(s), 4) for s in sys.argv[1].split('?bbox=')[1].split('&amp')[0].split('%2C')])" '`
+2. Select `HTML` under the `Link or HTML` section of the Share panel.
+3. Copy the HTML, it should start with `<iframe`, and it should be all in one line, with no line breaks.
+4. Then paste the copied HTML into your shell after the single quote, add a single quote at the end, and press Enter.
+
+The output will be in the format `[LowerLeftLon, LowerLeftLat, UpperRightLon, UpperRightLat]`. For example, processing the HTML for a map centered on Portland, OR would output `[-122.7077, 45.4761, -122.5831, 45.5372]`.
+
+-------------
+
 The class `SingleRoute` contains methods for analyzing and plotting a single route. It is also possible to obfuscate your address with a privacy bubble if you plan on sharing on the internet:
 
 ```python
