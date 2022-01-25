@@ -101,6 +101,45 @@ class SingleRoute:
         if show:
             plt.show()
 
+    def snake_animation(self,
+                        frame_distance=50,
+                        map_file_path=None,
+                        fps=60,
+                        dpi=300,
+                        marker_size=0.5,
+                        active_color='red',
+                        set_color='blue',
+                        post_pause=2,
+                        path_to_ffmpeg='/usr/local/bin/ffmpeg'):
+        '''
+        Creates a .mp4 video wherein this route is "crawled" through by a distance frame_distance in
+         each frame. It is still in the process of being optimized...
+
+        Parameters
+        -----------
+        frame_distance: distance that the path extends each frame
+        map_file_path: path to a map image, which will be displayed beneath the plot 
+         (map file name should be created using utils.map_file_name function)
+        fps: frames per second of video (each gpx data point is one frame)
+        dpi: resolution of each image in video
+        marker_size: size of plotted routes
+        active_color: color that each new route is displayed in
+        set_color: color that each route takes after its debut frame
+        post_pause: time (in seconds) that the last frame is paused on (good for Instagram,
+          or other platforms with autoloops)
+        path_to_ffmpeg: path to ffmpeg writer on your machine
+        '''
+        return snake_animation(self,
+                               frame_distance=frame_distance,
+                               map_file_path=map_file_path,
+                               fps=fps,
+                               dpi=dpi,
+                               marker_size=marker_size,
+                               active_color=active_color,
+                               set_color=set_color,
+                               post_pause=post_pause,
+                               path_to_ffmpeg=path_to_ffmpeg)
+
 
 class MultipleRoutes:
     '''
@@ -336,7 +375,7 @@ class MultipleRoutes:
         frame_distance: distance that the path extends each frame
         map_file_path: path to a map image, which will be displayed beneath the plot 
          (map file name should be created using utils.map_file_name function)
-        fps: frames per second of video (each route is one frame, so fps=2 is 0.5 sec per route)
+        fps: frames per second of video (each gpx data point is one frame)
         dpi: resolution of each image in video
         marker_size: size of plotted routes
         active_color: color that each new route is displayed in
@@ -345,68 +384,13 @@ class MultipleRoutes:
           or other platforms with autoloops)
         path_to_ffmpeg: path to ffmpeg writer on your machine
         '''
-
-        # set the path to FFMPEG (this should be stored in ./constants.py)
-        plt.rcParams['animation.ffmpeg_path'] = path_to_ffmpeg
-        ffmpeg_writer = manimation.writers['ffmpeg']
-        writer = ffmpeg_writer(fps=fps)
-
-        fig, ax = plt.subplots()
-        plt.axis('off')
-
-        # if the user includes a map background, plot it w/ bounding box
-        # bounding box values are parsed from map file name
-        if map_file_path:
-            bound_box = bound_box_from_map(map_file_path)
-            img = plt.imread(map_file_path)
-            ax.imshow(img, zorder=0, extent=bound_box, aspect='auto')
-            ax.set_xlim(bound_box[0], bound_box[1])
-            ax.set_ylim(bound_box[2], bound_box[3])
-
-        with writer.saving(fig, f'{date_time_stamp()}.mp4', dpi):
-
-            # loop through the routes...
-            for i in range(len(self.routes)):
-
-                # let the user know which route is being processed
-                print(f'Rendering route {i + 1} of {len(self.routes)}')
-
-                plt.title(self.routes[i].date)
-                counter = 0     # number of data points counted
-                distance_traveled = 0       # distance traveled this frame
-
-                while counter < len(self.routes[i]):
-                    # create lists for storing current leg data
-                    leg_latitudes = []
-                    leg_longitudes = []
-
-                    # append data to leg lists
-                    while distance_traveled < frame_distance and counter < len(self.routes[i]):
-                        leg_latitudes.append(
-                            self.routes[i].data['Latitude'].iloc[counter])
-                        leg_longitudes.append(
-                            self.routes[i].data['Longitude'].iloc[counter])
-
-                        if counter > 0:
-                            # add the distance between this point and the last to the distance traveled this leg
-                            distance_traveled += calculate_distance(self.routes[i].data['Latitude'].iloc[counter],
-                                                                    self.routes[i].data['Longitude'].iloc[counter],
-                                                                    self.routes[i].data['Latitude'].iloc[counter - 1],
-                                                                    self.routes[i].data['Longitude'].iloc[counter - 1])
-                        counter += 1
-
-                    # scatter plot the current leg
-                    ax.scatter(leg_longitudes, leg_latitudes,
-                               zorder=1, color=active_color, s=marker_size)
-
-                    writer.grab_frame()
-                    distance_traveled = 0   # reset distance traveled
-
-                # scatter all previous legs in set color
-                ax.scatter(self.routes[i].data['Longitude'],
-                           self.routes[i].data['Latitude'], zorder=1, color=set_color, s=marker_size)
-                writer.grab_frame()
-
-            # post pause on last frame
-            for i in range(int(post_pause * fps)):
-                writer.grab_frame()
+        return snake_animation(self.routes,
+                               frame_distance=frame_distance,
+                               map_file_path=map_file_path,
+                               fps=fps,
+                               dpi=dpi,
+                               marker_size=marker_size,
+                               active_color=active_color,
+                               set_color=set_color,
+                               post_pause=post_pause,
+                               path_to_ffmpeg=path_to_ffmpeg)

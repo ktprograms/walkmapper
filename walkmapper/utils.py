@@ -4,7 +4,10 @@ import re
 import shutil
 import datetime
 import time
+import collections
 
+import matplotlib.pyplot as plt
+import matplotlib.animation as manimation
 import gpxpy
 import numpy as np
 import pandas as pd
@@ -212,3 +215,103 @@ def date_time_stamp():
     '''
     t = datetime.datetime.fromtimestamp(time.time())
     return t.strftime('%Y%m%d_%H%M%S')
+
+def snake_animation(route_or_routes,
+                    frame_distance,
+                    map_file_path,
+                    fps,
+                    dpi,
+                    marker_size,
+                    active_color,
+                    set_color,
+                    post_pause,
+                    path_to_ffmpeg):
+    '''
+    **This is a private implementation and not meant to be used directly. Use either SingleRoute.snake_animation or MultipleRoutes.snake_animation.**
+
+    Creates a .mp4 video wherein each route is "crawled" through by a distance frame_distance in
+     each frame. It is suggested that this is only used for a few routes at a time. It is still
+     in the process of being optimized...
+
+    Parameters
+    -----------
+    route_or_routes: either a SingleRoute, or a list of SingleRoute
+    frame_distance: distance that the path extends each frame
+    map_file_path: path to a map image, which will be displayed beneath the plot 
+     (map file name should be created using utils.map_file_name function)
+    fps: frames per second of video (each gpx data point is one frame)
+    dpi: resolution of each image in video
+    marker_size: size of plotted routes
+    active_color: color that each new route is displayed in
+    set_color: color that each route takes after its debut frame
+    post_pause: time (in seconds) that the last frame is paused on (good for Instagram,
+      or other platforms with autoloops)
+    path_to_ffmpeg: path to ffmpeg writer on your machine
+    '''
+    # check if route_or_routes is a single route, and if so convert it to an iterable (tuple)
+    if isinstance(route_or_routes, list):
+        route_iterable = route_or_routes
+        routes_count = len(route_iterable)
+    else:
+        route_iterable = (route_or_routes,)
+        routes_count = 1
+
+    # set the path to FFMPEG (this should be stored in ./constants.py)
+    plt.rcParams['animation.ffmpeg_path'] = path_to_ffmpeg
+    ffmpeg_writer = manimation.writers['ffmpeg']
+    writer = ffmpeg_writer(fps=fps)
+
+    fig, ax = plt.subplots()
+    plt.axis('off')
+
+    # if the user includes a map background, plot it w/ bounding box
+    # bounding box values are parsed from map file name
+    if map_file_path:
+        bound_box = bound_box_from_map(map_file_path)
+        img = plt.imread(map_file_path)
+        ax.imshow(img, zorder=0, extent=bound_box, aspect='auto')
+        ax.set_xlim(bound_box[0], bound_box[1])
+        ax.set_ylim(bound_box[2], bound_box[3])
+
+    with writer.saving(fig, f'{date_time_stamp()}.mp4', dpi):
+        # loop through the routes...
+        for index, route in enumerate(route_iterable):
+            print(f'Rendering route {index + 1} of {routes_count}')
+
+            plt.title(route.date)
+            counter = 0     # number of data points counted
+            distance_traveled = 0       # distance traveled this frame
+
+            while counter < len(route):
+                # create lists for storing current leg data
+                leg_latitudes = []
+                leg_longitudes = []
+
+                # append data to leg lists
+                while distance_traveled < frame_distance and counter < len(route):
+                    leg_latitudes.append(route.data['Latitude'].iloc[counter])
+                    leg_longitudes.append(route.data['Longitude'].iloc[counter])
+
+                    if counter > 0:
+                        # add the distance between this point and the last to the distance traveled this leg
+                        distance_traveled += calculate_distance(route.data['Latitude'].iloc[counter],
+                                                                route.data['Longitude'].iloc[counter],
+                                                                route.data['Latitude'].iloc[counter - 1],
+                                                                route.data['Longitude'].iloc[counter - 1])
+                    counter += 1
+
+                # scatter plot the current leg
+                ax.scatter(leg_longitudes, leg_latitudes,
+                           zorder=1, color=active_color, s=marker_size)
+
+                writer.grab_frame()
+                distance_traveled = 0   # reset distance traveled
+
+            # scatter all previous legs in set color
+            ax.scatter(route.data['Longitude'],
+                       route.data['Latitude'], zorder=1, color=set_color, s=marker_size)
+            writer.grab_frame()
+
+        # post pause on last frame
+        for i in range(int(post_pause * fps)):
+            writer.grab_frame()

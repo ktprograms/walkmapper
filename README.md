@@ -59,6 +59,8 @@ map_file_name("images/portland.png", 45.5372, -122.5831, 45.4761, -122.7077, "Po
 # saves over images/portland.png with images/Portland_45.5372_m122.5831_45.4761_m122.7077.png
 ```
 
+You can also create a snake animation, where the route is drawn out from start to finish, by using the `SingleRoute.snake_animation` method.
+
 -------------
 
 The class `MultipleRoutes` contains methods for analyzing, plotting, and animating multiple routes:
