@@ -26,7 +26,7 @@ class SingleRoute:
         self.time_delta = time_delta
 
         self.data = gpx_to_dataframe(self.gpx_file_path, self.time_delta)
-        self.date = self.data["Time"][0].strftime("%Y-%m-%d")
+        self.date = self.data['Time'][0].strftime('%Y-%m-%d')
         self.distance = route_distance(self.data)
 
         self.home_lat = home_lat
@@ -36,8 +36,8 @@ class SingleRoute:
         # if the user has set a privacy bubble...
         if None not in [self.home_lat, self.home_lon, self.privacy_bubble_rad]:
             # ... exclude data points within the bubble radius
-            self.data = self.data.loc[calculate_distance(self.data["Latitude"],
-                                                         self.data["Longitude"],
+            self.data = self.data.loc[calculate_distance(self.data['Latitude'],
+                                                         self.data['Longitude'],
                                                          self.home_lat, self.home_lon) > self.privacy_bubble_rad]
         else:
             none_count = [self.home_lat, self.home_lon,
@@ -46,11 +46,11 @@ class SingleRoute:
             # if the user entered invalid privacy bubble information, raise an error
             if none_count != 0 and none_count != 3:
                 raise ValueError(
-                    "Please make sure all or none of the following parameters have the value 'None': home_lat, home_lon, and privacy_bubble_rad")
+                    'Please make sure all or none of the following parameters have the value "None": home_lat, home_lon, and privacy_bubble_rad')
 
         # rough estimate of route duration (last minus first timestamp)
-        self.duration = round((self.data["Time"].iat[-1] -
-                               self.data["Time"].iat[0]).seconds / 60.0, 3)
+        self.duration = round((self.data['Time'].iat[-1] -
+                               self.data['Time'].iat[0]).seconds / 60.0, 3)
 
         # distance of route (in miles)
 
@@ -68,11 +68,11 @@ class SingleRoute:
         -----------
         csv_file_name: path to .csv file
         '''
-        if not csv_file_name.endswith(".csv"):
-            csv_file_name += ".csv"
+        if not csv_file_name.endswith('.csv'):
+            csv_file_name += '.csv'
         self.data.to_csv(csv_file_name, index=False)
 
-    def plot(self, map_file_path=None, marker_color="red", marker_size=0.5, show=True):
+    def plot(self, map_file_path=None, marker_color='red', marker_size=0.5, show=True):
         '''
         Plots a single route and saves/displays
 
@@ -84,8 +84,8 @@ class SingleRoute:
         marker_size: size of marker used for plotting
         '''
         fig, ax = plt.subplots()
-        ax.scatter(self.data["Longitude"],
-                   self.data["Latitude"], zorder=1, c="red", s=marker_size)
+        ax.scatter(self.data['Longitude'],
+                   self.data['Latitude'], zorder=1, c='red', s=marker_size)
 
         # if the user includes a map background, plot it w/ bounding box
         # bounding box values are parsed from map file name
@@ -94,9 +94,9 @@ class SingleRoute:
             ax.set_xlim(bound_box[0], bound_box[1])
             ax.set_ylim(bound_box[2], bound_box[3])
             img = plt.imread(map_file_path)
-            ax.imshow(img, zorder=0, extent=bound_box, aspect="auto")
+            ax.imshow(img, zorder=0, extent=bound_box, aspect='auto')
 
-        plt.axis("off")
+        plt.axis('off')
 
         if show:
             plt.show()
@@ -122,7 +122,7 @@ class MultipleRoutes:
         self.privacy_bubble_rad = privacy_bubble_rad
         self.time_delta = time_delta
 
-        self.files = [i for i in files if i.endswith(".gpx")]
+        self.files = [i for i in files if i.endswith('.gpx')]
 
         # convert all files into SingleRoute classes and store in a list
         self.routes = [SingleRoute(
@@ -143,14 +143,14 @@ class MultipleRoutes:
         all_lons = []
 
         for i in self.routes:
-            all_lats += list(i.data["Latitude"])
-            all_lons += list(i.data["Longitude"])
+            all_lats += list(i.data['Latitude'])
+            all_lons += list(i.data['Longitude'])
 
-        return pd.DataFrame({"Latitude": all_lats, "Longitude": all_lons})
+        return pd.DataFrame({'Latitude': all_lats, 'Longitude': all_lons})
 
     def basic_plot(self,
                    map_file_path=None,
-                   marker_color="red",
+                   marker_color='red',
                    marker_size=0.5,
                    show=True,
                    save_file_path=None,
@@ -171,8 +171,8 @@ class MultipleRoutes:
         fig, ax = plt.subplots()
 
         # scatter plot all routes
-        [ax.scatter(i.data["Longitude"],
-                    i.data["Latitude"], zorder=1, c=marker_color, s=marker_size) for i in self.routes]
+        [ax.scatter(i.data['Longitude'],
+                    i.data['Latitude'], zorder=1, c=marker_color, s=marker_size) for i in self.routes]
 
         # if the user includes a map background, plot it w/ bounding box
         # bounding box values are parsed from map file name
@@ -181,19 +181,19 @@ class MultipleRoutes:
             ax.set_xlim(bound_box[0], bound_box[1])
             ax.set_ylim(bound_box[2], bound_box[3])
             img = plt.imread(map_file_path)
-            ax.imshow(img, zorder=0, extent=bound_box, aspect="auto")
+            ax.imshow(img, zorder=0, extent=bound_box, aspect='auto')
 
-        plt.axis("tight")
-        plt.axis("off")
+        plt.axis('tight')
+        plt.axis('off')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
         if save_file_path:
-            if not save_file_path.endswith(".png"):
-                save_file_path += ".png"
+            if not save_file_path.endswith('.png'):
+                save_file_path += '.png'
 
             plt.savefig(save_file_path, dpi=dpi,
-                        bbox_inches="tight", pad_inches=0)
+                        bbox_inches='tight', pad_inches=0)
         if show:
             plt.show()
 
@@ -217,21 +217,21 @@ class MultipleRoutes:
         fig, ax = plt.subplots()
 
         # the heat map is constructed from a 2D histogram
-        ax.hist2d(dta["Longitude"], dta["Latitude"], n_bins, range=[
+        ax.hist2d(dta['Longitude'], dta['Latitude'], n_bins, range=[
                   [bound_box[0], bound_box[1]], [bound_box[2], bound_box[3]]], alpha=alpha, zorder=1)
 
         ax.set_xlim(bound_box[0], bound_box[1])
         ax.set_ylim(bound_box[2], bound_box[3])
         img = plt.imread(map_file_path)
-        ax.imshow(img, zorder=0, extent=bound_box, aspect="auto")
-        plt.axis("off")
+        ax.imshow(img, zorder=0, extent=bound_box, aspect='auto')
+        plt.axis('off')
 
         if save_file_path:
-            if not save_file_path.endswith(".png"):
-                save_file_path += ".png"
+            if not save_file_path.endswith('.png'):
+                save_file_path += '.png'
 
             plt.savefig(save_file_path, dpi=dpi,
-                        bbox_inches="tight", pad_inches=0)
+                        bbox_inches='tight', pad_inches=0)
         if show:
             plt.show()
 
@@ -240,10 +240,10 @@ class MultipleRoutes:
                               fps=2,
                               dpi=300,
                               marker_size=0.5,
-                              active_color="red",
-                              set_color="blue",
+                              active_color='red',
+                              set_color='blue',
                               post_pause=2,
-                              path_to_ffmpeg="/usr/local/bin/ffmpeg"):
+                              path_to_ffmpeg='/usr/local/bin/ffmpeg'):
         '''
         Creates a .mp4 video with each separate route first appearing in active_color, and then
           transitioning to set_color. The video is saved in the current directory, the title is a 
@@ -264,8 +264,8 @@ class MultipleRoutes:
         '''
 
         # set the path to FFMPEG (this should be stored in ./constants.py)
-        plt.rcParams["animation.ffmpeg_path"] = path_to_ffmpeg
-        ffmpeg_writer = manimation.writers["ffmpeg"]
+        plt.rcParams['animation.ffmpeg_path'] = path_to_ffmpeg
+        ffmpeg_writer = manimation.writers['ffmpeg']
         writer = ffmpeg_writer(fps=fps)
 
         fig, ax = plt.subplots()
@@ -277,28 +277,28 @@ class MultipleRoutes:
             ax.set_xlim(bound_box[0], bound_box[1])
             ax.set_ylim(bound_box[2], bound_box[3])
             img = plt.imread(map_file_path)
-            ax.imshow(img, zorder=0, extent=bound_box, aspect="auto")
+            ax.imshow(img, zorder=0, extent=bound_box, aspect='auto')
 
-        plt.axis("off")
+        plt.axis('off')
 
-        with writer.saving(fig, "{}.mp4".format(date_time_stamp()), dpi):
+        with writer.saving(fig, '{}.mp4'.format(date_time_stamp()), dpi):
             counter = 0
 
             # loop through the routes...
             for i in range(len(self.routes)):
                 # let the user know which route is being processed
-                print("Rendering route {} of {}".format(
+                print('Rendering route {} of {}'.format(
                     i + 1, len(self.routes)))
 
                 # after the first loop...
                 if counter > 0:
                     # plot all old routes in set_color
                     for j in range(0, counter):
-                        ax.scatter(self.routes[j].data["Longitude"], self.routes[j].data["Latitude"],
+                        ax.scatter(self.routes[j].data['Longitude'], self.routes[j].data['Latitude'],
                                    zorder=1, color=set_color, s=marker_size)
 
                 # plot current route in active_color
-                ax.scatter(self.routes[i].data["Longitude"], self.routes[i].data["Latitude"],
+                ax.scatter(self.routes[i].data['Longitude'], self.routes[i].data['Latitude'],
                            zorder=1, color=active_color, s=marker_size)
 
                 # set the title to the date that the route was completed
@@ -309,7 +309,7 @@ class MultipleRoutes:
                 counter += 1
 
             # once all routes are complete, grab another frame with the last route in set_color
-            ax.scatter(self.routes[-1].data["Longitude"], self.routes[-1].data["Latitude"],
+            ax.scatter(self.routes[-1].data['Longitude'], self.routes[-1].data['Latitude'],
                        zorder=1, color=set_color, s=marker_size)
             writer.grab_frame()
 
@@ -323,10 +323,10 @@ class MultipleRoutes:
                         fps=60,
                         dpi=300,
                         marker_size=0.5,
-                        active_color="red",
-                        set_color="blue",
+                        active_color='red',
+                        set_color='blue',
                         post_pause=2,
-                        path_to_ffmpeg="/usr/local/bin/ffmpeg"):
+                        path_to_ffmpeg='/usr/local/bin/ffmpeg'):
         '''
         Creates a .mp4 video wherein each route is "crawled" through by a distance frame_distance in
          each frame. It is suggested that this is only used for a few routes at a time. It is still
@@ -348,29 +348,29 @@ class MultipleRoutes:
         '''
 
         # set the path to FFMPEG (this should be stored in ./constants.py)
-        plt.rcParams["animation.ffmpeg_path"] = path_to_ffmpeg
-        ffmpeg_writer = manimation.writers["ffmpeg"]
+        plt.rcParams['animation.ffmpeg_path'] = path_to_ffmpeg
+        ffmpeg_writer = manimation.writers['ffmpeg']
         writer = ffmpeg_writer(fps=fps)
 
         fig, ax = plt.subplots()
-        plt.axis("off")
+        plt.axis('off')
 
         # if the user includes a map background, plot it w/ bounding box
         # bounding box values are parsed from map file name
         if map_file_path:
             bound_box = bound_box_from_map(map_file_path)
             img = plt.imread(map_file_path)
-            ax.imshow(img, zorder=0, extent=bound_box, aspect="auto")
+            ax.imshow(img, zorder=0, extent=bound_box, aspect='auto')
             ax.set_xlim(bound_box[0], bound_box[1])
             ax.set_ylim(bound_box[2], bound_box[3])
 
-        with writer.saving(fig, "{}.mp4".format(date_time_stamp()), dpi):
+        with writer.saving(fig, '{}.mp4'.format(date_time_stamp()), dpi):
 
             # loop through the routes...
             for i in range(len(self.routes)):
 
                 # let the user know which route is being processed
-                print("Rendering route {} of {}".format(
+                print('Rendering route {} of {}'.format(
                     i + 1, len(self.routes)))
 
                 plt.title(self.routes[i].date)
@@ -385,16 +385,16 @@ class MultipleRoutes:
                     # append data to leg lists
                     while distance_traveled < frame_distance and counter < len(self.routes[i]):
                         leg_latitudes.append(
-                            self.routes[i].data["Latitude"].iloc[counter])
+                            self.routes[i].data['Latitude'].iloc[counter])
                         leg_longitudes.append(
-                            self.routes[i].data["Longitude"].iloc[counter])
+                            self.routes[i].data['Longitude'].iloc[counter])
 
                         if counter > 0:
                             # add the distance between this point and the last to the distance traveled this leg
-                            distance_traveled += calculate_distance(self.routes[i].data["Latitude"].iloc[counter],
-                                                                    self.routes[i].data["Longitude"].iloc[counter],
-                                                                    self.routes[i].data["Latitude"].iloc[counter - 1],
-                                                                    self.routes[i].data["Longitude"].iloc[counter - 1])
+                            distance_traveled += calculate_distance(self.routes[i].data['Latitude'].iloc[counter],
+                                                                    self.routes[i].data['Longitude'].iloc[counter],
+                                                                    self.routes[i].data['Latitude'].iloc[counter - 1],
+                                                                    self.routes[i].data['Longitude'].iloc[counter - 1])
                         counter += 1
 
                     # scatter plot the current leg
@@ -405,8 +405,8 @@ class MultipleRoutes:
                     distance_traveled = 0   # reset distance traveled
 
                 # scatter all previous legs in set color
-                ax.scatter(self.routes[i].data["Longitude"],
-                           self.routes[i].data["Latitude"], zorder=1, color=set_color, s=marker_size)
+                ax.scatter(self.routes[i].data['Longitude'],
+                           self.routes[i].data['Latitude'], zorder=1, color=set_color, s=marker_size)
                 writer.grab_frame()
 
             # post pause on last frame

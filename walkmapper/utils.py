@@ -61,7 +61,7 @@ def map_file_name(current_map_file_path, ur_lat, ur_lon, ll_lat, ll_lon, descrip
     ur_lon: longitude of upper right corner of map image
     ll_lat: latitude of lower left corner of map image
     ll_lon: longitude of lower left corner of map image
-    description: optional brief description of the map (e.g.: "Portland")
+    description: optional brief description of the map (e.g.: 'Portland')
 
     Returns
     -----------
@@ -77,7 +77,7 @@ def map_file_name(current_map_file_path, ur_lat, ur_lon, ll_lat, ll_lon, descrip
 
     # add in the optional description
     if description:
-        description = description.split(" ")
+        description = description.split(' ')
         append_description = ''
         for i in description:
             append_description += i.capitalize()
@@ -87,26 +87,26 @@ def map_file_name(current_map_file_path, ur_lat, ur_lon, ll_lat, ll_lon, descrip
 
     # upper right latitude
     if ur_lat < 0:
-        new_file_name += "m{}_".format(abs(ur_lat))
+        new_file_name += 'm{}_'.format(abs(ur_lat))
     else:
         new_file_name += str(ur_lat) + '_'
 
     # upper right longitude
     if ur_lon < 0:
-        new_file_name += "m{}".format(abs(ur_lon)) + '_'
+        new_file_name += 'm{}'.format(abs(ur_lon)) + '_'
     else:
         new_file_name += str(ur_lon) + '_'
 
     # lower left latitude
     if ll_lat < 0:
         # 'm' used as prefix for negative numbers
-        new_file_name += "m{}_".format(abs(ll_lat))
+        new_file_name += 'm{}_'.format(abs(ll_lat))
     else:
         new_file_name += str(ll_lat) + '_'
 
     # lower left longitude
     if ll_lon < 0:
-        new_file_name += "m{}".format(abs(ll_lon))
+        new_file_name += 'm{}'.format(abs(ll_lon))
     else:
         new_file_name += str(ll_lon)
 
@@ -132,11 +132,11 @@ def bound_box_from_map(map_file_path):
     bounding box as a tuple
     '''
     try:
-        map_file_path = os.path.splitext(map_file_path)[0].split("_")
+        map_file_path = os.path.splitext(map_file_path)[0].split('_')
         temp_bound_box = [map_file_path[-1], map_file_path[-3],
                           map_file_path[-2], map_file_path[-4]]
     except IndexError:
-        print("Error: please make sure map title has format Description_UpperRightLat_UpperRightLon_LowerLeftLat_LowerLeftLon.png")
+        print('Error: please make sure map title has format Description_UpperRightLat_UpperRightLon_LowerLeftLat_LowerLeftLon.png')
         raise
     bound_box = []
     for i in temp_bound_box:
@@ -180,9 +180,9 @@ def gpx_to_dataframe(file_name, time_delta):
                 longitudes.append(point.longitude)
                 latitudes.append(point.latitude)
 
-    return pd.DataFrame(data={"Time": times,
-                              "Longitude": longitudes,
-                              "Latitude": latitudes})
+    return pd.DataFrame(data={'Time': times,
+                              'Longitude': longitudes,
+                              'Latitude': latitudes})
 
 
 def route_distance(gpx_file_df):
@@ -197,8 +197,8 @@ def route_distance(gpx_file_df):
     -----------
     total distance traversed in GPX data set
     '''
-    lons = gpx_file_df["Longitude"]
-    lats = gpx_file_df["Latitude"]
+    lons = gpx_file_df['Longitude']
+    lats = gpx_file_df['Latitude']
 
     distance = [calculate_distance(
         lats[i - 1], lons[i - 1], lats[i], lons[i]) for i in range(1, len(lons))]
@@ -211,4 +211,4 @@ def date_time_stamp():
     Creates a date/time stamp for file names (takes local time from your machine)
     '''
     t = datetime.datetime.fromtimestamp(time.time())
-    return t.strftime("%Y%m%d_%H%M%S")
+    return t.strftime('%Y%m%d_%H%M%S')
