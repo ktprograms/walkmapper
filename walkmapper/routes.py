@@ -281,14 +281,13 @@ class MultipleRoutes:
 
         plt.axis('off')
 
-        with writer.saving(fig, '{}.mp4'.format(date_time_stamp()), dpi):
+        with writer.saving(fig, f'{date_time_stamp()}.mp4', dpi):
             counter = 0
 
             # loop through the routes...
             for i in range(len(self.routes)):
                 # let the user know which route is being processed
-                print('Rendering route {} of {}'.format(
-                    i + 1, len(self.routes)))
+                print(f'Rendering route {i + 1} of {len(self.routes)}')
 
                 # after the first loop...
                 if counter > 0:
@@ -364,14 +363,13 @@ class MultipleRoutes:
             ax.set_xlim(bound_box[0], bound_box[1])
             ax.set_ylim(bound_box[2], bound_box[3])
 
-        with writer.saving(fig, '{}.mp4'.format(date_time_stamp()), dpi):
+        with writer.saving(fig, f'{date_time_stamp()}.mp4', dpi):
 
             # loop through the routes...
             for i in range(len(self.routes)):
 
                 # let the user know which route is being processed
-                print('Rendering route {} of {}'.format(
-                    i + 1, len(self.routes)))
+                print(f'Rendering route {i + 1} of {len(self.routes)}')
 
                 plt.title(self.routes[i].date)
                 counter = 0     # number of data points counted

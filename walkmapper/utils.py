@@ -87,26 +87,26 @@ def map_file_name(current_map_file_path, ur_lat, ur_lon, ll_lat, ll_lon, descrip
 
     # upper right latitude
     if ur_lat < 0:
-        new_file_name += 'm{}_'.format(abs(ur_lat))
+        new_file_name += f'm{abs(ur_lat)}_'
     else:
         new_file_name += str(ur_lat) + '_'
 
     # upper right longitude
     if ur_lon < 0:
-        new_file_name += 'm{}'.format(abs(ur_lon)) + '_'
+        new_file_name += f'm{abs(ur_lon)}_'
     else:
         new_file_name += str(ur_lon) + '_'
 
     # lower left latitude
     if ll_lat < 0:
         # 'm' used as prefix for negative numbers
-        new_file_name += 'm{}_'.format(abs(ll_lat))
+        new_file_name += f'm{abs(ll_lat)}_'
     else:
         new_file_name += str(ll_lat) + '_'
 
     # lower left longitude
     if ll_lon < 0:
-        new_file_name += 'm{}'.format(abs(ll_lon))
+        new_file_name += f'm{abs(ll_lon)}'
     else:
         new_file_name += str(ll_lon)
 

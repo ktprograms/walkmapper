@@ -2,7 +2,7 @@ import os
 
 from walkmapper.routes import MultipleRoutes
 
-files = ["examples/data/{}".format(i) for i in os.listdir("examples/data")]
+files = [f"examples/data/{i}" for i in os.listdir("examples/data")]
 
 rts = MultipleRoutes(files)
 

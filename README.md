@@ -55,7 +55,7 @@ The class `MultipleRoutes` contains methods for analyzing, plotting, and animati
 from walkmapper.routes import MultipleRoutes
 
 # compile all .gpx files in a folder into a list
-files = ["folder/{}".format(i) for i in os.listdir("folder") if i.endswith(".gpx")]
+files = [f"folder/{i}" for i in os.listdir("folder") if i.endswith(".gpx")]
 
 # create instance of MultipleRoutes
 routes = MultipleRoutes(files, home_lat=45.0000, home_lon=-122.0000, privacy_bubble_rad=150)
