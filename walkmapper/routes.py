@@ -49,8 +49,8 @@ class SingleRoute:
                     "Please make sure all or none of the following parameters have the value 'None': home_lat, home_lon, and privacy_bubble_rad")
 
         # rough estimate of route duration (last minus first timestamp)
-        self.duration = round((self.data["Time"][-1] -
-                               self.data["Time"][0]).seconds / 60.0, 3)
+        self.duration = round((self.data["Time"].iat[-1] -
+                               self.data["Time"].iat[0]).seconds / 60.0, 3)
 
         # distance of route (in miles)
 
